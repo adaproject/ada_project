@@ -47,7 +47,7 @@ err = function(face.set, mean.face){
 ### step by step to get converged mean.face ###
 
 d.train1 = 96 - d.train1
-face.set = d.train1[1:500,]
+face.set = d.train1
 
 ### align all faces to the origin 
 ### time consuming steps
@@ -74,7 +74,7 @@ d = err(face.set, mean.face)
 d
 
 ## iteration
-while (d > 7.7) {
+while (d > 39) {
   ### compute all faces' mean.face
   ### normalize the mean.face 
   mean.face = normalize(mean.face)
@@ -83,7 +83,8 @@ while (d > 7.7) {
   mean.face = average.shape(face.set)
   ### compute error(check convergency)
   d = err(face.set, mean.face)
-  if (d < 7.7)
+  d
+  if (d < 39)
     break
 }
 
