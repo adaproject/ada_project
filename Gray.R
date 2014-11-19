@@ -3,25 +3,44 @@
 ### input point p = (x,y), return gray scale ##
 n = 96
 gray.scale = function(p, im, n = 96){
-  if (n^2 - (p[1] - 1 + (p[2] - 1) * n) <= n^2)
-    return(im[n^2 - (p[1] - 1 + (p[2] - 1) * n)])
-  else 
-    
+    return(im[n^2 - (p[1] - 1 + (p[2] - 1) * n)])    
 }
 
 ### given ith point in one image, get the line of i-1 th and i+1 th point, compute ith point's locan
 ### gray apperarance
 
-### function fo fine the last and next keypoints
-### input: index i j , output: the i + j th point in the face X
-find.point = function(i, k, X){
+### function fo find the APPROPRIATE "last" and "next" keypoints
+### for whole training set. input i, output two numbers, which are i's "last" and "next" point
+find = function(i) {
+  if (i ==1) return(c(3,4))
+  if (i ==2) return(c(5,6))
+  if (i ==3) return(c(7,11))
+  if (i ==4) return(c(8,12))
+  if (i ==5) return(c(9,11))
+  if (i ==6) return(c(10,13))
+  if (i ==7) return(c(8,3))
+  if (i ==8) return(c(7,4))
+  if (i ==9) return(c(5,10))
+  if (i ==10) return(c(9,6))
+  if (i ==11) return(c(3,5))
+  if (i ==12) return(c(14,15))
+  if (i ==13) return(c(14,15))
+  if (i ==14) return(c(12,13))
+  if (i ==15) return(c(12,13))
+  
+}
+
+
+### input: index i  , output: i th point's "last" and "next" point in the face X
+find.point = function(i, X){
   pts = ps(X)
-  n = dim(pts)[1]
-  k = mod(k, n)
-  j = i + k
-  if (j > n)
-    j = mod(j, n)
-  return(pts[j,])
+#  n = dim(pts)[1]
+#  k = k %% n
+#  j = i + k
+#  if (j > n)
+#    j = j %% n
+  
+  return(list(p1 = pts[find(i)[1],], p2 = pts[find(i)[2],]))
 }
 
 ### function for out put ith point's gray apperarance on a image
@@ -32,8 +51,8 @@ m = 3
 local.gray = function(i, X, im, m = 3){
   pts = ps(X)
   p1 = pts[i,] # ith point
-  p2 = find.point(i, -1, X) # i-1 th point
-  p3 = find.point(i, +1, X) # i+1 th point
+  p2 = find.point(i,X)$p1 # i-1 th point
+  p3 = find.point(i,X)$p2 # i+1 th point
   # p1: ith point, p2: i-1 th point, p3: i+1 th point
   
   # take step distance = sqrt(2) to find the nearest point
@@ -52,6 +71,7 @@ local.gray = function(i, X, im, m = 3){
     gx = rep(p1[1], 2*m+1)
     gy = p1[2] + -m:m
   }
+  
   g = matrix(c(gx, gy), ncol = 2, byrow = F)
 
   # compute the corresponding gray scale and gradient gray scale
@@ -59,8 +79,18 @@ local.gray = function(i, X, im, m = 3){
   g.scale.g = c()
   for (i in 1:dim(g)[1]){
     g.scale[i] = gray.scale(g[i,], im)
+  }
+  
+  for (i in 1:dim(g)[1]){
+    if (is.na(g.scale[i])==T & is.na(g.scale[dim(g)[1] + 1 - i ])==F) g.scale[i] = g.scale[dim(g)[1] + 1 - i ]
+    if (is.na(g.scale[i])==T & is.na(g.scale[dim(g)[1] + 1 - i ])==T) g.scale[i] = 128
+  }
+  
+  for (i in 1:dim(g)[1]){
     if (i > 1) g.scale.g[i-1] = g.scale[i] - g.scale[i - 1] 
   }
+  
+  
   
   ### normalize the gradient gray scale
   if (sum(abs(g.scale.g)) != 0) {
@@ -77,6 +107,7 @@ local.gray = function(i, X, im, m = 3){
 ### input: face.set, im.train, parameter m
 ### ouput: list contains: [[1]]: ave. gray appearance for each keypoint
 ###                      [[2]]: list contains every keypoint's ave gray covariance matrix
+
 gradient = function(d.train1, im.train1, m = 3){
   ### compute every keypoint's local gradient gray appearance among the face.set
   ### and it's covariance matirx
