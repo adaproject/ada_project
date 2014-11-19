@@ -2,9 +2,11 @@
 ### choose training set
 
 ### dealing with the missing value and outliers ##
+d.train<-read.csv("training.csv",header = TRUE,sep=",",stringsAsFactors=F)
+d.test<-read.csv("test.csv",header = TRUE,sep=",",stringsAsFactors=F)
+
 d.train1 = na.omit(d.train)
-summary(d.train1)
-summary(d.train)
+
 dim(na.omit(d.train))
 
 ### First use d.train1(no missing point) as the training set ###
