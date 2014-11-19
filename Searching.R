@@ -64,10 +64,10 @@ update.index = function(index, d.index){
 
 ## function to update
 ## input x, X, P, b, 
-update = function(X, index, b, xbar = mean.face, P = Principal.vector, lambda = Principal.value){
+update = function(X, index, b, xbar = mean.face, im = new.image, P = Principal.vector, lambda = Principal.value){
   x = xbar + t(P %*% b)
   ## 1. compute s.X
-  s.X = new.shape(X)
+  s.X = new.shape(X, im = new.image)
   
   ## 2. align X to s.X, compute the index (ds, dtheta, dt)
   d.index = alignment(X, s.X)
@@ -127,14 +127,20 @@ X0 = aligned.face(index0, x0) ## get aligned X0
 X = X0
 index = index0
 b = b0
+new.image = im.test[21,]
+g = gradient(d.train1, im.train1)
+
+save(g, file='g.Rd')
+
+
 
 d = 100
 while(d > 0.1){
   updated = update(X, index, b)
   d = dist(X, updated$X)
   d
-  if (d < 0.1) 
-    break
+  #if (d < 0.1) 
+ #   break
   X= updated$X
   index = updated$index
   b = updated$b
@@ -144,12 +150,17 @@ ps(X)
 
 ## test 
 
-g = gradient(d.train1, im.train1)
-new.image = im.test[2,]
-im <- matrix(data=rev(im.test[2,]), nrow=96, ncol=96)
+#g = gradient(d.train1, im.train1)
+im <- matrix(data=rev(new.image), nrow=96, ncol=96)
 image(1:96, 1:96, im, col=gray((0:255)/255))
 for (i in 1:15){
-  points(96-ps(X)[i,1],         96-ps(X)[i,2],         col="green")  
+  points(ps(X)[i,1],         ps(X)[i,2],         col="red")  
 }
 
+## test ##
+im = im.train1[1751,]
+im1 <- matrix(data=rev(im), nrow=96, ncol=96)
 
+for (i in 1:15){
+  points(ps(X)[i,1],         ps(X)[i,2],         col="red")  
+}
