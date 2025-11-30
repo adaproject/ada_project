@@ -131,8 +131,8 @@ gradient = function(d.train1, im.train1, m = 3){
       (gij[i,] - gj) %*% t(gij[i,] - gj)
     }
     sj = sj / n
-    
-    g[j,] = mean(gj)
+
+    g[j,] = gj  ### Fixed: use the full gradient vector, not its mean
     s[[j]] = sj
   }
   ### g is the matrix contains average local gradient gray appearance for every the point among all faces

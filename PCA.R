@@ -6,13 +6,13 @@
 ### compute the mean.face ###
 mean.face = average.shape(face.set)
 
-### compute the corvariance matrix s
-#??????????????????????????????????????????????
+### compute the covariance matrix s
+### Fixed: loop over rows (samples) not columns (features)
 s = matrix(0,dim(face.set)[2],dim(face.set)[2])
-for (i in 1:dim(face.set)[2]){
+for (i in 1:dim(face.set)[1]){
   s = s + as.matrix(t(face.set[i,] - mean.face)) %*% as.matrix(face.set[i,] - mean.face)
 }
-s = s / dim(face.set)[2]
+s = s / dim(face.set)[1]
 
 ### compute the eigen values and eigen vectors
 eigen.values = eigen(s)$values

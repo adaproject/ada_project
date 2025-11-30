@@ -135,16 +135,18 @@ save(g, file='g.Rd')
 
 
 d = 100
-while(d > 0.1){
+max_iterations = 50  ### Added: prevent infinite loops
+iteration = 0
+while(d > 0.1 && iteration < max_iterations){
   updated = update(X, index, b)
   d = dist(X, updated$X)
   d
-  #if (d < 0.1) 
- #   break
   X= updated$X
   index = updated$index
   b = updated$b
+  iteration = iteration + 1
 }
+cat("Converged after", iteration, "iterations with distance:", d, "\n")
 
 ps(X)
 

@@ -47,7 +47,7 @@ inv.aligned.face = function(index, s.X){
   tx = index[3]
   ty = index[4]
   pts = pts - c(tx, ty)
-  for (i in 1:(dim(X)[2]/2)){
+  for (i in 1:(dim(s.X)[2]/2)){  ### Fixed: use s.X instead of undefined X
     pts[i,] = solve(matrix(c(ax, ay, -ay, ax), nrow = 2, byrow = F)) %*% pts[i,]
   }
   ## get the aligned pts, then reshape it to X2

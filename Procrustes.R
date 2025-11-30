@@ -23,10 +23,11 @@ average.shape = function(face.set){
 }
 
 ### normalize a face ##
+### Fixed: normalize the entire shape, not x and y separately
 normalize = function(X){
   pts = ps(X)
-  pts[,1] = pts[,1] / sqrt(sum(pts[,1]^2))
-  pts[,2] = pts[,2] / sqrt(sum(pts[,2]^2))
+  norm = sqrt(sum(pts[,1]^2 + pts[,2]^2))
+  pts = pts / norm
   return(vec(pts))
 }
 
